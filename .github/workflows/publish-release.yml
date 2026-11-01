@@ -1,0 +1,66 @@
+name: Publish verified release packages
+on:
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: Successful build workflow run ID
+        required: true
+      tag:
+        description: Existing draft release tag
+        required: true
+        default: v1.0.0
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SOURCE_RUN: ${{ inputs.source_run }}
+      RELEASE_TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require a successful build
+        run: |
+          gh api "repos/$GH_REPO/actions/runs/$SOURCE_RUN" --jq '{conclusion, status}' > build-status.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('build-status.json',encoding='utf-8'))
+          assert d['status']=='completed' and d['conclusion']=='success',d
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run }}
+          pattern: Pocket-Local-*
+          path: release-inputs
+          merge-multiple: true
+      - name: Verify packages and create checksums
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import hashlib,json,os
+          version=json.load(open('package.json',encoding='utf-8'))['version']
+          assert os.environ['RELEASE_TAG']=='v'+version
+          root=Path('release-inputs')
+          names=[f'Pocket-Local-{version}-{suffix}.zip' for suffix in ['web','mac-arm64','win-x64']]
+          assert sorted(p.name for p in root.glob('*.zip'))==sorted(names)
+          lines=[]
+          for name in names:
+              p=root/name
+              with ZipFile(p) as z:
+                  assert z.testzip() is None,name
+                  assert not any('/site/data/' in n or n.endswith('pocket-import-links.json') or n.endswith('pocket-game-links.json') for n in z.namelist()),name
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
+              lines.append(h.hexdigest()+'  '+name)
+          (root/'SHA256SUMS.txt').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          PY
+      - name: Upload the three verified options
+        run: gh release upload "$RELEASE_TAG" release-inputs/*.zip release-inputs/SHA256SUMS.txt --clobber
+      - name: Publish the public prerelease
+        run: gh release edit "$RELEASE_TAG" --draft=false --prerelease

@@ -10,7 +10,7 @@ def paths():
         p=ROOT/name
         if not p.is_file():raise SystemExit('Eksik proje dosyası: '+name)
         yield p
-    for name in ['package.json','package-lock.json','RELEASE_NOTES.md','desktop/main.cjs','desktop/README.md','desktop/requirements-build.txt','scripts/prepare-desktop.py','scripts/release-browser.py','.github/workflows/desktop-release.yml']:
+    for name in ['package.json','package-lock.json','RELEASE_NOTES.md','desktop/main.cjs','desktop/README.md','desktop/requirements-build.txt','scripts/prepare-desktop.py','scripts/release-browser.py','.github/workflows/desktop-release.yml','.github/workflows/publish-release.yml']:
         p=ROOT/name
         if p.is_file():yield p
     for p in sorted((ROOT/'pokemon-assets'/'v1').rglob('*')):
