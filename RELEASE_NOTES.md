@@ -8,7 +8,7 @@
 
 Masaüstü uygulamalarında terminal veya Python kurulumu gerekmez. Otomatik aktarım uygulama açıkken çalışır. Tek/iki hesap, 27 seri / 4.577 kart, kart detayları, takas planı ve JSON yedekleri desteklenir. JSON yedekleri üç sürüm arasında taşınabilir. Kişisel hesaplar ve koleksiyon verileri dağıtım paketlerine dahil değildir.
 
-Mac uygulamasının açılışı ve dosyaya kaydı macOS üzerinde doğrulanmıştır. Windows paketi Mac üzerinde üretilmiştir; Windows'ta çalıştırma testi henüz yapılmamıştır. GitHub Actions iş akışı yerel Windows çalışma ortamını da test edecek şekilde hazırlanmıştır; henüz GitHub üzerinde çalıştırılmamıştır.
+Mac uygulamasının açılışı ve dosyaya kaydı macOS üzerinde doğrulanmıştır. Mac ve gerçek Windows ortamlarında yerel veri servisinin açılması, oturum erişimi ve dosyaya kayıt testleri GitHub Actions üzerinde geçmiştir. Windows masaüstü penceresinde elle kullanım testi henüz yapılmamıştır. [Platform kontrolü](https://github.com/myyusuf17/pokemon-pocket-local/actions/runs/41270474566).
 
 Paketlerde ticari kod imzası / Apple noterlemesi yoktur. Mac paketi Intel işlemciler için değildir. Otomatik güncelleme bulunmaz; yeni sürümler elle indirilir. Oyundaki takas koşullarını her zaman oyun içinden kontrol edin.
 
