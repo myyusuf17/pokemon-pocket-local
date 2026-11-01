@@ -8,3 +8,5 @@ node_modules/
 releases/
 .desktop-build/
 *.spec
+
+pokemon-assets/**/*.gz
