@@ -30,8 +30,8 @@ else:
   with urllib.request.urlopen(url,context=context,timeout=60) as response:archive.write_bytes(response.read())
  target=runtime/'python';target.mkdir(exist_ok=True)
  with zipfile.ZipFile(archive) as z:z.extractall(target)
- pth=next(target.glob('python*._pth'));text=pth.read_text()
+ pth=next(target.glob('python*._pth'));text=pth.read_text(encoding='utf-8')
  text=text.replace('../site','../../site')
  if '../../site' not in text:text+='\n../../site\n'
- pth.write_text(text)
+ pth.write_text(text,encoding='utf-8')
 print('Prepared',args.platform,'desktop resources:',staging)

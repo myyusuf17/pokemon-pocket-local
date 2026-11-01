@@ -29,7 +29,7 @@ class PocketGame:
         self.transport = transport or self._request
 
     def _load(self):
-        return json.loads(self.path.read_text()) if self.path.exists() else {}
+        return json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists() else {}
 
     def _save(self, data):
         self.folder.mkdir(parents=True, exist_ok=True)

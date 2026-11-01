@@ -8,10 +8,10 @@ class TradePlan:
   self.path=Path(folder)/'pokemon-trade-plan.json';self.catalog=catalog;self.store=store;self.imports=imports;self.flag=Path(flag);self.lock=threading.RLock()
  def enabled(self):return self.flag.exists()
  def _load(self):
-  return json.loads(self.path.read_text()) if self.path.exists() else {'revision':0,'balances':{'main':0,'second':None},'selected':[],'plan':None}
+  return json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists() else {'revision':0,'balances':{'main':0,'second':None},'selected':[],'plan':None}
  def _save(self,d):
   tmp=self.path.with_suffix('.tmp')
-  with open(tmp,'w') as f:
+  with open(tmp,'w',encoding='utf-8') as f:
    os.chmod(tmp,0o600);json.dump(d,f,ensure_ascii=False,separators=(',',':'));f.flush();os.fsync(f.fileno())
   os.replace(tmp,self.path)
  def cards(self,state):

@@ -7,7 +7,7 @@ folder=Path(__file__).resolve().parent/'data'
 print('Önce yerel uygulamanın Hesaplar menüsünden kalıcı dışa aktarma bağlantını ekle.')
 account=input('Hesap (ana için main, ikinci için second): ').strip()
 try:
-    links=json.loads((folder/'pocket-import-links.json').read_text())
+    links=json.loads((folder/'pocket-import-links.json').read_text(encoding='utf-8'))
     token=links.get(account,{}).get('token')
     if not token:raise SyncError(400,'Önce bu hesabın dışa aktarma bağlantısını ekle.')
     auth=getpass.getpass('Kendi DotGG API yetkin (ekranda görünmez; Nintendo şifresi değil): ')

@@ -21,7 +21,7 @@ with tempfile.TemporaryDirectory() as folder:
   assert req('/api/pokemon/state')['overrides']=={}
   req('/api/pokemon/quantity',{'account':'main','key':'A1:1','count':2})
   assert req('/api/pokemon/state')['quantities']['main']['A1:1']==2
-  assert json.loads((Path(folder)/'collection.json').read_text())['quantities']['main']['A1:1']==2
+  assert json.loads((Path(folder)/'collection.json').read_text(encoding='utf-8'))['quantities']['main']['A1:1']==2
   print('Bundled runtime: clean start, random port, session authorization and disk persistence passed.')
  finally:
   process.terminate();process.wait(timeout=10)

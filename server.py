@@ -10,7 +10,7 @@ if getattr(sys, 'frozen', False):
     import certifi
     os.environ.setdefault('SSL_CERT_FILE', certifi.where())
 ROOT = Path(os.environ.get('POCKET_SITE_ROOT', Path(__file__).resolve().parent))
-CATALOG = json.loads((ROOT/'catalog.js').read_text().removeprefix('window.POCKET_CATALOG=').strip().removesuffix(';'))
+CATALOG = json.loads((ROOT/'catalog.js').read_text(encoding='utf-8').removeprefix('window.POCKET_CATALOG=').strip().removesuffix(';'))
 VALID = {s['code']+':'+str(c['id']) for s in CATALOG for c in s['cards']}
 
 def serve(port, open_browser=True, data_dir=None):
@@ -75,7 +75,7 @@ def serve(port, open_browser=True, data_dir=None):
                     from backup import validate_backup
                     c,t=validate_backup(d,VALID)
                     with store.lock,trade.lock:
-                        backup=folder/'before-restore.json';backup.write_text(json.dumps({'collection':store.public(),'trade':trade._load()}));backup.chmod(0o600)
+                        backup=folder/'before-restore.json';backup.write_text(json.dumps({'collection':store.public(),'trade':trade._load()}),encoding='utf-8');backup.chmod(0o600)
                         # Any previous connected accounts are disconnected before replacing user data.
                         for a in ('main','second'):imports.disconnect(a)
                         store.data.update(c,revision=store.data['revision']+1,initialized=True);store.save();trade._save(t)

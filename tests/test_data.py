@@ -25,9 +25,9 @@ class DataTests(unittest.TestCase):
    class Imports:
     def public(self):return {'accounts':{}}
    flag=Path(folder)/'enabled';flag.touch()
-   catalog=[{'code':'A1','name':'Example','cards':[{'id':i,'name':f'Card {i}','rarity':'★','rarityLabel':'1 yıldız','rarityLevel':5,'missing':True} for i in (1,2)]}]
+   catalog=[{'code':'A1','name':'Example','cards':[{'id':i,'name':f'İğne ★ {i}','rarity':'★','rarityLabel':'1 yıldız','rarityLevel':5,'missing':True} for i in (1,2)]}]
    trade=TradePlan(folder,catalog,store,Imports(),flag)
    self.assertEqual(trade.public()['balances']['main'],0)
    plan=trade.change({'action':'confirm','revision':0,'balances':{'main':5000,'second':5000},'selected':['A1:1']})['plan']
-   self.assertEqual(plan['remainingBalances']['second'],1000);self.assertEqual(plan['cards'][0]['returnCard']['key'],'A1:2');self.assertNotIn('A1:1',store.data['overrides'])
+   self.assertEqual(plan['remainingBalances']['second'],1000);self.assertEqual(plan['cards'][0]['returnCard']['key'],'A1:2');self.assertNotIn('A1:1',store.data['overrides']);self.assertEqual(TradePlan(folder,catalog,store,Imports(),flag).public()['plan']['cards'][0]['name'],'İğne ★ 1')
 if __name__=='__main__':unittest.main()

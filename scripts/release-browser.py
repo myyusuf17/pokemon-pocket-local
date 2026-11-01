@@ -5,7 +5,7 @@ import json,sys,re
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from package_release import paths
-version=json.loads((ROOT/'package.json').read_text())['version']
+version=json.loads((ROOT/'package.json').read_text(encoding='utf-8'))['version']
 out=ROOT/'releases'/f'Pocket-Local-{version}-web.zip';out.parent.mkdir(exist_ok=True)
 allowed={'.html','.js','.css','.webp','.json'}
 with ZipFile(out,'w',ZIP_DEFLATED,compresslevel=6) as z:
@@ -14,7 +14,7 @@ with ZipFile(out,'w',ZIP_DEFLATED,compresslevel=6) as z:
   if rel.parts[0] in ('tests','desktop','scripts','.github') or p.name=='package.json' or p.name=='package-lock.json':continue
   if p.suffix in allowed:
    if p.name=='index.html':
-    html=p.read_text()
+    html=p.read_text(encoding='utf-8')
     html=re.sub(r'<details><summary>Oyun koleksiyonumu otomatik aktarabilir miyim\?</summary>.*?</details>', '<details><summary>Oyun koleksiyonumu otomatik aktarabilir miyim?</summary><p>Bu ZIP yalnızca tarayıcı sürümüdür. Otomatik aktarım için Mac veya Windows masaüstü paketini indir. Masaüstü uygulamasında Python kurulumu ve terminal gerekmez. Kayıtlarını taşımak için Hesaplar menüsünden JSON yedeği alıp uygulamada yükle.</p></details>',html,flags=re.S)
     z.writestr(str(Path('Pocket-Local-Web')/rel),html)
    else:z.write(p,Path('Pocket-Local-Web')/rel)

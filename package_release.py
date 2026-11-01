@@ -25,7 +25,7 @@ def main():
     sensitive=['/srv/','/var/lib/','ssh root@']
     for p in entries:
         if p.suffix in ('.py','.js','.html','.md','.json','.cjs'):
-            text=p.read_text()
+            text=p.read_text(encoding='utf-8')
             # Scanner's own list must not become a publication of private identifiers.
             if p.name!='package_release.py' and any(s in text for s in sensitive):raise SystemExit('Kişisel kaynak kalıntısı: '+str(p.relative_to(ROOT)))
     with ZipFile(output,'w',ZIP_DEFLATED,compresslevel=6) as archive:

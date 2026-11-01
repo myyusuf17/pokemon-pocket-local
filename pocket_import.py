@@ -92,7 +92,7 @@ class PocketImport:
         self.game = PocketGame(folder)
         self.lock = threading.RLock()
         self.busy = set()
-        self.links = json.loads(self.path.read_text()) if self.path.exists() else {}
+        self.links = json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists() else {}
         self.opener = urllib.request.build_opener(NoRedirect())
 
     def save(self):

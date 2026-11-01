@@ -7,7 +7,7 @@ class SyncError(Exception):
 class Store:
     def __init__(self,folder,valid):
         self.folder=Path(folder);self.path=self.folder/'collection.json';self.lock=threading.RLock();self.valid=set(valid);self.attempts={}
-        self.data=json.loads(self.path.read_text()) if self.path.exists() else {'revision':0,'initialized':False,'overrides':{},'devices':[]}
+        self.data=json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists() else {'revision':0,'initialized':False,'overrides':{},'devices':[]}
     def save(self):
         self.folder.mkdir(parents=True,exist_ok=True)
         temp=self.path.with_suffix('.tmp')
