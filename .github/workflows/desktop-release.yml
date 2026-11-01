@@ -1,0 +1,54 @@
+name: Build three release options
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  desktop:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: mac
+          - os: windows-latest
+            platform: windows
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - run: npm ci
+      - run: python -m pip install -r desktop/requirements-build.txt
+      - run: python -m unittest discover -s tests -v
+      - run: node tests/offline-smoke.cjs
+      - run: python scripts/prepare-desktop.py --platform ${{ matrix.platform }} --pyinstaller python
+      - run: python tests/desktop-backend-smoke.py
+      - if: runner.os == 'macOS'
+        run: npx electron-builder --mac zip --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - if: runner.os == 'Windows'
+        run: npm run build:windows
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pocket-Local-${{ matrix.platform }}
+          path: releases/*.zip
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - run: python scripts/release-browser.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pocket-Local-web
+          path: releases/*-web.zip

@@ -1,0 +1,10 @@
+data/
+__pycache__/
+*.pyc
+.DS_Store
+*.zip
+.env*
+node_modules/
+releases/
+.desktop-build/
+*.spec

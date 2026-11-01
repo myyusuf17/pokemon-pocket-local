@@ -1,0 +1,56 @@
+{
+  "name": "pocket-local",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline Pokémon TCG Pocket collection and trade planner",
+  "author": "Pocket Local contributors",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "prepare:backend": "python3 scripts/prepare-desktop.py --platform mac",
+    "build:mac": "electron-builder --mac zip --arm64 --publish never",
+    "build:windows": "electron-builder --win zip --x64 --publish never",
+    "test": "python3 -m unittest discover -s tests -v && node tests/offline-smoke.cjs",
+    "release:web": "python3 package_release.py"
+  },
+  "build": {
+    "appId": "org.pocketlocal.desktop",
+    "productName": "Pocket Local",
+    "asar": true,
+    "directories": {
+      "output": "releases"
+    },
+    "files": [
+      "desktop/*.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": ".desktop-build/site",
+        "to": "site"
+      },
+      {
+        "from": ".desktop-build/runtime",
+        "to": "runtime"
+      }
+    ],
+    "artifactName": "Pocket-Local-${version}-${os}-${arch}.${ext}",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "identity": null,
+      "target": [
+        "zip"
+      ]
+    },
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "zip"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0"
+  }
+}
